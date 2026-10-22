@@ -936,33 +936,13 @@
                                 Kategori
                             </label>
 
-                            <select
-                                name="kategori"
-                                id="kategori"
-                                class="form-select"
-                            >
+                            <select name="kategori" class="form-select mb-3">
+    <option value="">Semua Kategori</option>
+    @foreach ($kategoris as $k)
+        <option value="{{ $k->id }}" @selected(request('kategori') == $k->id)>{{ $k->nama }}</option>
+    @endforeach
+</select>
 
-                                <option value="">
-                                    Semua Kategori
-                                </option>
-
-                                @foreach ([
-                                    'Olahraga',
-                                    'Pendidikan',
-                                    'Potensi',
-                                    'Pembangunan'
-                                ] as $k)
-
-                                    <option
-                                        value="{{ $k }}"
-                                        @selected(request('kategori') == $k)
-                                    >
-                                        {{ $k }}
-                                    </option>
-
-                                @endforeach
-
-                            </select>
 
                         </div>
 
@@ -1066,9 +1046,7 @@
 
                             <div class="info-berita">
 
-                                <span class="badge-kategori">
-                                    {{ $berita->kategori }}
-                                </span>
+                               <span class="badge badge-kategori text-white">{{ $berita->kategori->nama }}</span>
 
 
                                 <span class="tanggal-berita">
@@ -1114,31 +1092,13 @@
 
                             {{-- TAG --}}
 
-                            <div class="tag-container">
+                            <div class="mb-2">
+    @foreach ($berita->tags as $tag)
+        <a href="{{ route('berita.index', ['tag' => $tag->id]) }}"
+           class="tag-pill text-decoration-none">#{{ $tag->nama }}</a>
+    @endforeach
+</div>
 
-                                @if (!empty($berita->tags))
-
-                                    @foreach (explode(',', $berita->tags) as $tag)
-
-                                        <span class="tag-pill">
-                                            #{{ trim($tag) }}
-                                        </span>
-
-                                    @endforeach
-
-                                @else
-
-                                    <span class="tag-pill">
-                                        #desa
-                                    </span>
-
-                                    <span class="tag-pill">
-                                        #jalatrang
-                                    </span>
-
-                                @endif
-
-                            </div>
 
 
 

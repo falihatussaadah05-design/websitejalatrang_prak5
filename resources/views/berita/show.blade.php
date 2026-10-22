@@ -421,9 +421,9 @@
             {{-- META --}}
             <div class="detail-meta">
 
-                <span class="detail-kategori">
-                    {{ $berita->kategori }}
-                </span>
+                <span class="badge badge-kategori text-white">
+    {{ $berita->kategori->nama }}
+</span>
 
                 <span>•</span>
 
@@ -452,18 +452,25 @@
             </div>
 
 
-            {{-- JUDUL --}}
-            <h1 class="detail-title">
-                {{ $berita->judul }}
-            </h1>
+           
+{{-- JUDUL --}}
+<h2 class="mt-3">
+    {{ $berita->judul }}
+</h2>
 
+{{-- TAG --}}
+<div class="mb-3">
+    @foreach ($berita->tags as $tag)
+        <a href="{{ route('berita.index', ['tag' => $tag->id]) }}"
+           class="tag-pill text-decoration-none">#{{ $tag->nama }}</a>
+    @endforeach
+</div>
 
-            {{-- ISI BERITA --}}
-            <div class="detail-content">
+{{-- ISI BERITA --}}
+<div class="detail-content">
+    {!! nl2br(e($berita->isi)) !!}
+</div>
 
-                {!! nl2br(e($berita->isi)) !!}
-
-            </div>
 
 
             {{-- PENULIS --}}
@@ -476,22 +483,6 @@
             @endif
 
 
-            {{-- TAG --}}
-            <div class="detail-tags">
-    <span class="detail-tags-title">Tags:</span>
-
-    @if($berita->tags)
-        @foreach(explode(',', $berita->tags) as $tag)
-            @php
-                $tag = trim($tag);
-            @endphp
-
-            @if($tag)
-                <span class="detail-tag">#{{ ltrim($tag, '#') }}</span>
-            @endif
-        @endforeach
-    @endif
-</div>
 
 
             {{-- BAGIKAN --}}

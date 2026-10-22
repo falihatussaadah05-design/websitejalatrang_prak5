@@ -16,10 +16,14 @@
 
             <div class="card-body">
 
-                <form action="{{ route('berita.update', $berita) }}" method="POST">
+              
+<form action="{{ route('berita.update', $berita) }}"
+      method="POST"
+      enctype="multipart/form-data">
 
-                    @csrf
-                    @method('PUT')
+    @csrf
+    @method('PUT')
+
 
                     {{-- Judul --}}
                     <div class="mb-3">
@@ -45,90 +49,117 @@
                     </div>
 
 
-                    {{-- Kategori --}}
-                    <div class="mb-3">
+                    
+{{-- KATEGORI --}}
+<div class="mb-3">
+    <label for="kategori_id" class="form-label fw-semibold">
+        Kategori
+    </label>
 
-                        <label for="kategori" class="form-label fw-semibold">
-                            Kategori
-                        </label>
+    <select name="kategori_id" id="kategori_id" class="form-select">
+        <option value="">-- Pilih Kategori --</option>
 
-                        <select name="kategori" id="kategori" class="form-select">
+        @foreach ($kategoris as $k)
+            <option
+                value="{{ $k->id }}"
+                @selected(old('kategori_id', $berita->kategori_id) == $k->id)
+            >
+                {{ $k->nama }}
+            </option>
+        @endforeach
+    </select>
 
-                            <option value="">-- Pilih Kategori --</option>
-
-                            @foreach (['Olahraga', 'Pendidikan', 'Potensi', 'Pembangunan'] as $k)
-
-                                <option
-                                    value="{{ $k }}"
-                                    @selected(old('kategori', $berita->kategori) == $k)
-                                >
-                                    {{ $k }}
-                                </option>
-
-                            @endforeach
-
-                        </select>
-
-                        @error('kategori')
-                            <div class="text-danger small">
-                                {{ $message }}
-                            </div>
-                        @enderror
-
-                    </div>
+    @error('kategori_id')
+        <div class="text-danger small">
+            {{ $message }}
+        </div>
+    @enderror
+</div>
 
 
-                    {{-- HASHTAG --}}
-                    <div class="mb-3">
+{{-- TAG --}}
+<div class="mb-3">
+    <label class="form-label fw-semibold d-block">
+        Tag
+    </label>
 
-                        <label for="tags" class="form-label fw-semibold">
-                            Hashtag
-                        </label>
+    @foreach ($tags as $tag)
+        <div class="form-check form-check-inline">
+            <input
+                class="form-check-input"
+                type="checkbox"
+                name="tags[]"
+                id="tag{{ $tag->id }}"
+                value="{{ $tag->id }}"
+                @checked(in_array(
+                    $tag->id,
+                    old('tags', $berita->tags->pluck('id')->toArray())
+                ))
+            >
 
-                        <input
-                            type="text"
-                            name="tags"
-                            id="tags"
-                            class="form-control"
-                            value="{{ old('tags', $berita->tags) }}"
-                            placeholder="Contoh: CVCup, Jalatrang, SepakBola, Olahraga"
-                        >
+            <label class="form-check-label" for="tag{{ $tag->id }}">
+                #{{ $tag->nama }}
+            </label>
+        </div>
+    @endforeach
 
-                        <small class="text-muted">
-                            Pisahkan setiap hashtag dengan koma.
-                            Contoh: CVCup, Jalatrang, SepakBola
-                        </small>
+    @error('tags')
+        <div class="text-danger small">{{ $message }}</div>
+    @enderror
+</div>
 
-                        @error('tags')
-                            <div class="text-danger small">
-                                {{ $message }}
-                            </div>
-                        @enderror
+{{-- GAMBAR --}}
+<div class="mb-3">
+    <label for="gambar" class="form-label fw-semibold">
+        Gambar
+    </label>
 
-                    </div>
+    @if ($berita->gambar)
+        <div>
+            <img
+                src="{{ asset('storage/' . $berita->gambar) }}"
+                class="img-thumbnail mb-2"
+                style="max-height: 140px;"
+                alt="Gambar berita saat ini"
+            >
+        </div>
+    @endif
 
+    <input
+        type="file"
+        name="gambar"
+        id="gambar"
+        class="form-control"
+        accept="image/*"
+    >
 
-                    {{-- Isi Berita --}}
-                    <div class="mb-3">
+    <small class="text-muted">
+        Kosongkan jika tidak ingin mengganti gambar.
+    </small>
 
-                        <label for="isi" class="form-label fw-semibold">
-                            Isi Berita
-                        </label>
+    @error('gambar')
+        <div class="text-danger small">{{ $message }}</div>
+    @enderror
+</div>
 
-                        <textarea
-                            name="isi"
-                            id="isi"
-                            rows="6"
-                            class="form-control"
-                        >{{ old('isi', $berita->isi) }}</textarea>
+{{-- ISI BERITA --}}
+<div class="mb-3">
+    <label for="isi" class="form-label fw-semibold">
+        Isi Berita
+    </label>
 
-                        @error('isi')
-                            <div class="text-danger small">
-                                {{ $message }}
-                            </div>
-                        @enderror
+    <textarea
+        name="isi"
+        id="isi"
+        rows="6"
+        class="form-control"
+    >{{ old('isi', $berita->isi) }}</textarea>
 
-                    </div>
+    @error('isi')
+        <div class="text-danger small">{{ $message }}</div>
+    @enderror
+</div>
+
 
 
                     {{-- Informasi --}}

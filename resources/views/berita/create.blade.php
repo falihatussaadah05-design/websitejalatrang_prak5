@@ -18,11 +18,7 @@
 
             <div class="card-body">
 
-                <form
-                    action="{{ route('berita.store') }}"
-                    method="POST"
-                    enctype="multipart/form-data"
-                >
+                <form action="{{ route('berita.store') }}" method="POST" enctype="multipart/form-data">
 
                     @csrf
 
@@ -51,73 +47,51 @@
                     </div>
 
 
-                    {{-- KATEGORI --}}
-                    <div class="mb-3">
+                   
+{{-- KATEGORI --}}
+<div class="mb-3">
+    <label for="kategori_id" class="form-label fw-semibold">
+        Kategori
+    </label>
 
-                        <label for="kategori" class="form-label fw-semibold">
-                            Kategori
-                        </label>
+    <select name="kategori_id" id="kategori_id" class="form-select">
+        <option value="">-- Pilih Kategori --</option>
 
-                        <select
-                            name="kategori"
-                            id="kategori"
-                            class="form-select"
-                        >
+        @foreach ($kategoris as $k)
+            <option value="{{ $k->id }}"
+                @selected(old('kategori_id') == $k->id)>
+                {{ $k->nama }}
+            </option>
+        @endforeach
+    </select>
 
-                            <option value="">
-                                -- Pilih Kategori --
-                            </option>
+    @error('kategori_id')
+        <div class="text-danger small">{{ $message }}</div>
+    @enderror
+</div>
 
-                            @foreach (['Olahraga', 'Pendidikan', 'Potensi', 'Pembangunan'] as $k)
+{{-- TAG --}}
+<div class="mb-3">
+    <label class="form-label fw-semibold d-block">Tag</label>
 
-                                <option
-                                    value="{{ $k }}"
-                                    @selected(old('kategori') == $k)
-                                >
-                                    {{ $k }}
-                                </option>
+    @foreach ($tags as $tag)
+        <div class="form-check form-check-inline">
+            <input
+                class="form-check-input"
+                type="checkbox"
+                name="tags[]"
+                id="tag{{ $tag->id }}"
+                value="{{ $tag->id }}"
+                @checked(in_array($tag->id, old('tags', [])))
+            >
 
-                            @endforeach
+            <label class="form-check-label" for="tag{{ $tag->id }}">
+                #{{ $tag->nama }}
+            </label>
+        </div>
+    @endforeach
+</div>
 
-                        </select>
-
-                        @error('kategori')
-                            <div class="text-danger small">
-                                {{ $message }}
-                            </div>
-                        @enderror
-
-                    </div>
-
-
-                    {{-- HASHTAG --}}
-                    <div class="mb-3">
-
-                        <label for="tags" class="form-label fw-semibold">
-                            Hashtag
-                        </label>
-
-                        <input
-                            type="text"
-                            name="tags"
-                            id="tags"
-                            class="form-control"
-                            value="{{ old('tags') }}"
-                            placeholder="Contoh: CVCup, Jalatrang, SepakBola, Olahraga"
-                        >
-
-                        <small class="text-muted">
-                            Pisahkan setiap hashtag dengan koma.
-                            Contoh: CVCup, Jalatrang, SepakBola
-                        </small>
-
-                        @error('tags')
-                            <div class="text-danger small">
-                                {{ $message }}
-                            </div>
-                        @enderror
-
-                    </div>
 
 
                     {{-- GAMBAR --}}
@@ -197,7 +171,14 @@
 
                     </div>
 
+<div class="mb-3">
+    <label for="gambar" class="form-label fw-semibold">Gambar (opsional)</label>
+    <input type="file" name="gambar" id="gambar" class="form-control" accept="image/*">
+    <small class="text-muted">Format JPG, PNG, atau WEBP. Maksimal 2 MB.</small>
+    @error('gambar') <div class="text-danger small">{{ $message }}</div> @enderror
+</div>
 
+                    
                     {{-- TOMBOL --}}
                     <div class="d-flex gap-2 pt-2 border-top mt-3">
 
